@@ -249,33 +249,34 @@ def handle_send_message(data):
         "timestamp": msg["timestamp"]
     })
 
-# Application entry point for starting the SIOTDA backend server
-if __name__ == "__main__":
-    init_db()
-    print("[DB]  SQLite initialised → iot_security.db")
+def get_frontend_dir():
     if len(sys.argv) > 1:
         custom_path = sys.argv[1]
         if os.path.isdir(custom_path):
-            frontend_path = custom_path
+            return custom_path
         elif os.path.isdir(os.path.join(os.path.dirname(__file__), "..", custom_path)):
-            frontend_path = os.path.join(os.path.dirname(__file__), "..", custom_path)
-        else:
-            frontend_path = custom_path
-    else:
-        candidates = [
-            os.path.join(os.path.dirname(__file__), "..", "Frontend"),
-            os.path.join(os.path.dirname(__file__), "..", "frontend"),
-            os.path.join(os.path.dirname(__file__), "Frontend"),
-            os.path.join(os.path.dirname(__file__), "frontend"),
-            os.path.join(os.path.dirname(__file__), ".."),
-            os.path.dirname(__file__),
-        ]
-        frontend_path = next(
-            (p for p in candidates if os.path.isfile(os.path.join(p, "index.html"))),
-            None
-        )
+            return os.path.join(os.path.dirname(__file__), "..", custom_path)
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "..", "Frontend"),
+        os.path.join(os.path.dirname(__file__), "..", "frontend"),
+        os.path.join(os.path.dirname(__file__), "Frontend"),
+        os.path.join(os.path.dirname(__file__), "frontend"),
+        os.path.join(os.path.dirname(__file__), ".."),
+        os.path.dirname(__file__),
+    ]
+    return next(
+        (p for p in candidates if os.path.isfile(os.path.join(p, "index.html"))),
+        None
+    )
 
-    app = create_app(frontend_dir=frontend_path)
+# Top-level Flask app instance for WSGI / Vercel serverless deployment
+init_db()
+frontend_path = get_frontend_dir()
+app = create_app(frontend_dir=frontend_path)
+
+# Application entry point for starting the SIOTDA backend server locally
+if __name__ == "__main__":
+    print("[DB]  SQLite initialised → iot_security.db")
     print("=" * 60)
     print("  SIOTDA — Real-Time WebSocket Edition")
     print("  Server  →  http://localhost:5000")
@@ -292,6 +293,5 @@ if __name__ == "__main__":
             log_output=False,
             allow_unsafe_werkzeug=True,
         )
-
     except KeyboardInterrupt:
         print("\n[Server shutdown complete]")

@@ -2,18 +2,31 @@
 import sqlite3
 import os
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "iot_security.db")
+if os.environ.get("VERCEL"):
+    DB_PATH = "/tmp/iot_security.db"
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "iot_security.db")
+
+_initialized = False
 
 # Establishes database connection with row access by column name
 def get_db():
+    global _initialized
+    if not _initialized and not os.path.exists(DB_PATH):
+        init_db()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode=WAL")
+    try:
+        conn.execute("PRAGMA journal_mode=WAL")
+    except sqlite3.OperationalError:
+        pass
     return conn
 
 # Initializes database tables required for IoT authentication and communication
 def init_db():
-    conn = get_db()
+    global _initialized
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
 
     # Stores registered IoT devices with pre-shared keys
@@ -72,3 +85,4 @@ def init_db():
 
     conn.commit()
     conn.close()
+    _initialized = True
