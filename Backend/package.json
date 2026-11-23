@@ -1,0 +1,12 @@
+{
+  "name": "siotda-backend",
+  "version": "1.0.0",
+  "description": "SIOTDA Backend Server",
+  "main": "app.py",
+  "scripts": {
+    "start": "python app.py",
+    "dev": "python app.py"
+  },
+  "author": "",
+  "license": "MIT"
+}

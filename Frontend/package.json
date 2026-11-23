@@ -1,0 +1,12 @@
+{
+  "name": "siotda-frontend",
+  "version": "1.0.0",
+  "description": "SIOTDA Frontend Interface",
+  "main": "index.html",
+  "scripts": {
+    "start": "python ../Backend/app.py",
+    "dev": "python ../Backend/app.py"
+  },
+  "author": "",
+  "license": "MIT"
+}

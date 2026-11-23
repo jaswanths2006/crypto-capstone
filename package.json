@@ -1,0 +1,12 @@
+{
+  "name": "siotda",
+  "version": "1.0.0",
+  "description": "Secure IoT Device Authentication Using Lightweight Cryptography",
+  "scripts": {
+    "start": "python Backend/app.py",
+    "dev": "python Backend/app.py",
+    "backend": "python Backend/app.py"
+  },
+  "author": "",
+  "license": "MIT"
+}
